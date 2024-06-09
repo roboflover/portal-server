@@ -1,0 +1,90 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id    Int     @default(autoincrement()) @id
+  email String  @unique
+  name  String?
+  password String
+  posts Post[]
+  role     String   @default("user")
+}
+
+model Post {
+  id        Int      @default(autoincrement()) @id
+  title     String
+  content   String?
+  published Boolean? @default(false)
+  author    User?    @relation(fields: [authorId], references: [id])
+  authorId  Int?
+}
+
+model Event {
+  id          Int      @id @default(autoincrement())
+  name        String
+  description String?
+  date        DateTime
+  tickets     Ticket[]
+}
+
+model Ticket {
+  id        Int     @id @default(autoincrement())
+  eventId   Int
+  userId    Int
+  promocode String?
+  event     Event   @relation(fields: [eventId], references: [id])
+}
+
+model Cat {
+  id    Int    @id @default(autoincrement())
+  name  String
+  age   Int
+  breed String
+}
+
+model Exhibition {
+  id        Int      @id @default(autoincrement())
+  title     String
+  description String?
+  images    Image[]  @relation("ExhibitionImages")
+  date      DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Project {
+  id        Int      @id @default(autoincrement())
+  name      String
+  description String?
+  images    Image[]  @relation("ProjectImages")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Product {
+  id        Int      @id @default(autoincrement())
+  name      String
+  description String?
+  price     Float
+  images    Image[]  @relation("ProductImages")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Image {
+  id           Int       @id @default(autoincrement())
+  url          String
+  exhibitionId Int?      // Поле для связи с выставками
+  projectId    Int?      // Поле для связи с проектами
+  productId    Int?      // Поле для связи с продуктами
+  exhibition   Exhibition? @relation("ExhibitionImages", fields: [exhibitionId], references: [id])
+  project      Project?   @relation("ProjectImages", fields: [projectId], references: [id])
+  product      Product?   @relation("ProductImages", fields: [productId], references: [id])
+  createdAt    DateTime   @default(now())
+}
