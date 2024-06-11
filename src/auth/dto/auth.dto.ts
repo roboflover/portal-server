@@ -1,4 +1,10 @@
-import { IsEmail, IsNotEmpty, MinLength } from 'class-validator';
+import { IsEmail, IsEnum, IsNotEmpty, MinLength } from 'class-validator';
+
+enum UserRole {
+  ADMIN = 'admin',
+  USER = 'user',
+  PROMOTER = 'promoter'
+}
 
 export class AuthDto {
   @IsEmail()
@@ -10,7 +16,11 @@ export class AuthDto {
 
   @IsNotEmpty()
   name: string;
-  
 
-  // Другие поля пользователя
+  @IsNotEmpty()
+  @IsEnum(UserRole, { message: 'Role must be either admin or user' })
+  role: UserRole;
+
 }
+
+

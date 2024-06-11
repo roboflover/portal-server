@@ -39,7 +39,7 @@ export class AuthService {
     return user;
   }
 
-  async signIn(email: string, pass: string): Promise<{ access_token: string; userId: number }> {
+  async signIn(email: string, pass: string ): Promise<{ access_token: string; userId: number, role:string }> {
     const user = await this.usersService.findByEmail(email);
 
     if (!user) {
@@ -54,9 +54,13 @@ export class AuthService {
 
     const payload = { sub: user.id, username: user.email };
 
+    const info = await this.getUserProfile(user.id)
+    const roleData = info.role
+
     return {
       access_token: await this.jwtService.signAsync(payload),
       userId: user.id,
+      role: roleData,
     };
   }
 
