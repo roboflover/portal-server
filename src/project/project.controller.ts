@@ -1,16 +1,16 @@
-// src/exhibition/exhibition.controller.ts
+// src/Project/Project.controller.ts
 
 import { Controller, Post, Body, UploadedFile, UseInterceptors, HttpException, HttpStatus, Get, Param, Patch, Delete } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { ExhibitionService } from './exhibition.service';
-import { CreateExhibitionDto } from './dto/create-exhibition.dto';
+import { ProjectService } from './project.service';
+import { CreateProjectDto } from './dto/create-project.dto';
 import axios from 'axios';
 
-@Controller('exhibition')
-export class ExhibitionController {
+@Controller('project')
+export class ProjectController {
   constructor(
-    private readonly todoService: ExhibitionService,
-    private readonly exhibitionService: ExhibitionService,
+    private readonly todoService: ProjectService,
+    private readonly projectService: ProjectService,
   ) {}
 
   @Post('upload')
@@ -22,7 +22,7 @@ export class ExhibitionController {
     try {
       let imageUrl;
       if (file) {
-        imageUrl = await this.exhibitionService.uploadFile(file, title);
+        imageUrl = await this.projectService.uploadFile(file, title);
         // console.log(Файл загружен успешно. URL изображения: ${imageUrl});
       } else {
         throw new HttpException('Файл не найден', HttpStatus.BAD_REQUEST);
@@ -35,8 +35,8 @@ export class ExhibitionController {
   }
 
   @Post()
-  create(@Body() createExhibitionDto: CreateExhibitionDto) {
-    return this.todoService.create(createExhibitionDto);
+  create(@Body() createProjectDto: CreateProjectDto) {
+    return this.todoService.create(createProjectDto);
   }
  
   @Get()
@@ -50,8 +50,8 @@ export class ExhibitionController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateExhibitionDto: CreateExhibitionDto) {
-    return this.todoService.update(+id, updateExhibitionDto);
+  update(@Param('id') id: string, @Body() updateProjectDto: CreateProjectDto) {
+    return this.todoService.update(+id, updateProjectDto);
   }
 
   @Delete(':id')

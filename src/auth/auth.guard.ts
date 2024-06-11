@@ -27,6 +27,7 @@ export class AuthGuard implements CanActivate {
           secret: jwtConstants.secret,
         }
       );
+      console.log(payload)
       request['user'] = payload;
     } catch (err) {
       console.error('Invalid token', err.message);

@@ -1,7 +1,10 @@
 import { IsString, IsOptional, IsBoolean, IsInt } from 'class-validator';
 import { Prisma } from '@prisma/client';
 
-export class CreateExhibitionDto implements Prisma.ExhibitionCreateInput, Prisma.ExhibitionUpdateInput {
+export class CreateProjectDto implements Prisma.ProjectCreateInput, Prisma.ProjectUpdateInput {
+  // name?: string;
+  // createdAt?: string | Date;
+  // updatedAt?: string | Date;
   
   @IsInt()
   id: number; // ID обязателен для обновления

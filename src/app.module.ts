@@ -5,6 +5,7 @@ import { UsersModule } from './users/users.module';
 import { PostModule } from './post/post.module';
 import { ConfigModule } from '@nestjs/config';
 import { ExhibitionModule } from './exhibition/exhibition.module';
+import { ProjectModule } from './project/project.module';
 import * as Joi from 'joi';
 
 @Module({
@@ -18,7 +19,9 @@ import * as Joi from 'joi';
         FRONTEND_URL: Joi.string(),
       }),
     }),
-    ExhibitionModule
+    ExhibitionModule,
+    ProjectModule
   ],
 })
+
 export class AppModule {}
