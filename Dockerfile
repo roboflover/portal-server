@@ -17,6 +17,6 @@ WORKDIR /src
 
 COPY --from=builder /src ./
 
-EXPOSE 80
+EXPOSE 8080
 
 CMD ["node", "dist/main"]
