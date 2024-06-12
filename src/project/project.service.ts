@@ -15,7 +15,7 @@ export class ProjectService {
   private bucket: string;
 
   constructor(private readonly prisma: PrismaService) {
-    // this.s3Client = new s3Client({ region: 'your-region' });
+
     this.bucket = process.env.S3_BUCKET;
     }
  
@@ -65,11 +65,11 @@ export class ProjectService {
     }
   }
 
-  async deleteFileById(id: string): Promise<void> {
+  async deleteFileById(id: number): Promise<void> {
     // Получаем запись из базы данных по ID
     const str: string = String(id);
-    const idAsNumber = parseInt(id, 10);
-    const project = await this.prisma.project.findUnique({ where: { id:idAsNumber }  });
+    //const idAsNumber = parseInt(id, 10);
+    const project = await this.prisma.project.findUnique({ where: { id }  });
     //this.prisma.project.delete({ where: { id:idAsNumber } });
     
     if (!project) {
@@ -90,7 +90,7 @@ export class ProjectService {
 
       // Удаляем запись из базы данных
       await this.prisma.project.delete({
-        where: { id:idAsNumber },
+        where: { id },
       });
     } catch (error) {
       throw new InternalServerErrorException(`Ошибка при удалении файла: ${error.message}`);

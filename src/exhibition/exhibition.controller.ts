@@ -45,13 +45,13 @@ export class ExhibitionController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.todoService.findOne(+id);
+  findOne(@Param('id') id: number) {
+    return this.todoService.findOne(id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateExhibitionDto: CreateExhibitionDto) {
-    return this.todoService.update(+id, updateExhibitionDto);
+  update(@Param('id') id: number, @Body() updateExhibitionDto: CreateExhibitionDto) {
+    return this.todoService.update(id, updateExhibitionDto);
   }
 
   @Delete(':id')

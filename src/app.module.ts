@@ -8,6 +8,9 @@ import { ExhibitionModule } from './exhibition/exhibition.module';
 import { ProjectModule } from './project/project.module';
 import * as Joi from 'joi';
 
+console.log('NODE_ENV:', process.env.NODE_ENV);
+   
+
 @Module({
   imports: [
     CatsModule, 

@@ -13,7 +13,9 @@ async function bootstrap() {
       credentials: true,
     });
   }
-  await app.listen(3000);
-console.log('app.listen(3000);')
+  await app.listen(80);
+//console.log('app.listen(3000);')
+   console.log('NODE_ENV:', process.env.AWS_REGION);
+
 }
 bootstrap();

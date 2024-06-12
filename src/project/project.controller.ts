@@ -45,8 +45,8 @@ export class ProjectController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.todoService.findOne(+id);
+  findOne(@Param('id') id: number) {
+    return this.todoService.findOne(id);
   }
 
   @Patch(':id')
@@ -56,7 +56,7 @@ export class ProjectController {
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    this.todoService.deleteFileById(id);
+    this.todoService.deleteFileById(+id);
     //return this.todoService.remove(+id);
   }
 }

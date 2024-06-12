@@ -103,10 +103,17 @@ export class ExhibitionService {
   //   return this.prisma.todo.create({ data });
   // }
 
+  // async findAll(): Promise<Exhibition[]> {
+  //   return this.prisma.exhibition.findMany();
+  // }
   async findAll(): Promise<Exhibition[]> {
-    return this.prisma.exhibition.findMany();
+    return this.prisma.exhibition.findMany({
+      orderBy: {
+        id: 'desc', // сортировка по полю id в порядке убывания
+      },
+    });
   }
-
+  
   async findOne(id: number): Promise<Exhibition | null> {
     return this.prisma.exhibition.findUnique({ where: { id } });
   }
