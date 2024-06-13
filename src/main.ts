@@ -4,18 +4,16 @@ import { ConfigService } from '@nestjs/config';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  app.enableCors();
   const configService = app.get(ConfigService);
   const frontendUrl = configService.get('FRONTEND_URL');
   if (frontendUrl) {
     app.enableCors({
-      origin: configService.get('FRONTEND_URL'),
+      origin: frontendUrl,
       credentials: true,
     });
   }
-  await app.listen(8080);
-//console.log('app.listen(3000);')
-   console.log('NODE_ENV:', process.env.AWS_REGION);
-
+  app.enableCors();
+  await app.listen(8080); 
+  console.log(`url ${frontendUrl}`)
 }
 bootstrap();

@@ -18,11 +18,12 @@ export class ProjectController {
   async uploadAndCreateTodo(
     @UploadedFile() file: Express.Multer.File,
     @Body('title') title: string,
+    @Body('description') description: string,
   ): Promise<void> {
     try {
       let imageUrl;
       if (file) {
-        imageUrl = await this.projectService.uploadFile(file, title);
+        imageUrl = await this.projectService.uploadFile(file, title, description);
         // console.log(Файл загружен успешно. URL изображения: ${imageUrl});
       } else {
         throw new HttpException('Файл не найден', HttpStatus.BAD_REQUEST);
@@ -57,6 +58,5 @@ export class ProjectController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     this.todoService.deleteFileById(+id);
-    //return this.todoService.remove(+id);
   }
 }

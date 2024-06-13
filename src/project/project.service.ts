@@ -29,7 +29,7 @@ export class ProjectService {
     });
   }
 
-  async uploadFile(file: Express.Multer.File, title:string ): Promise<string> {
+  async uploadFile(file: Express.Multer.File, title:string, description:string ): Promise<string> {
     // Получаем последний номер из базы данных
     const lastImage = await this.prisma.project.findFirst({
       orderBy: { id: 'desc' },
@@ -56,6 +56,7 @@ export class ProjectService {
         data: {
           title: title,
           imageUrl: imageUrl,
+          description: description
         },
       });
 
@@ -98,7 +99,9 @@ export class ProjectService {
   }
 
   async findAll(): Promise<Project[]> {
-    return this.prisma.project.findMany();
+    return this.prisma.project.findMany({
+      orderBy: { updatedAt: 'desc' },
+    });
   }
 
   async findOne(id: number): Promise<Project | null> {
