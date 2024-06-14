@@ -10,6 +10,7 @@ COPY . .
 
 RUN npm run build
 
+RUN npx prisma generate
 # Stage 2: Run the NestJS application
 FROM node:20.1-alpine
 
