@@ -6,15 +6,16 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
 }
 
 model User {
-  id    Int     @default(autoincrement()) @id
-  email String  @unique
-  name  String?
-  password String
-  posts Post[]
-  role     String   @default("user")
+  id        Int     @default(autoincrement()) @id
+  email     String  @unique
+  name      String?
+  password  String
+  posts     Post[]
+  role      String  @default("user")
 }
 
 model Post {
@@ -50,32 +51,32 @@ model Cat {
 }
 
 model Exhibition {
-  id        Int      @id @default(autoincrement())
-  title     String
+  id          Int       @id @default(autoincrement())
+  title       String
   description String?
-  imageUrl    String? 
-  date      DateTime?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt 
+  date        DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt 
+  images      Image[]   @relation("ExhibitionImages")
 }
 
 model Project {
-  id        Int      @id @default(autoincrement())
-  title     String
+  id          Int       @id @default(autoincrement())
+  title       String
   description String?
-  imageUrl    String 
-  date      DateTime?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt 
+  date        DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt 
+  images      Image[]   @relation("ProjectImages")
 }
 
 model Product {
-  id        Int      @id @default(autoincrement())
-  name      String
+  id          Int       @id @default(autoincrement())
+  name        String
   description String?
-  price     Float
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  price       Float
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 }
 
 model Image {
@@ -84,4 +85,7 @@ model Image {
   exhibitionId Int?      // Поле для связи с выставками
   projectId    Int?      // Поле для связи с проектами
   productId    Int?      // Поле для связи с продуктами
+  exhibition   Exhibition? @relation("ExhibitionImages", fields: [exhibitionId], references: [id])
+  project      Project?    @relation("ProjectImages", fields: [projectId], references: [id])
+  
 }

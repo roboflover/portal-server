@@ -57,6 +57,6 @@ export class ProjectController {
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    this.todoService.deleteFileById(+id);
+    this.todoService.deleteFileById(id);
   }
 }
