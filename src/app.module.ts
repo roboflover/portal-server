@@ -5,7 +5,9 @@ import { UsersModule } from './users/users.module';
 import { PostModule } from './post/post.module';
 import { ConfigModule } from '@nestjs/config';
 import { ExhibitionModule } from './exhibition/exhibition.module';
-import { ProjectModule } from './project/project.module';
+import { NewsModule } from './news/news.module'
+import { CatalogModule } from './catalog/catalog.module';
+import { ProductModule } from './product/product.module';
 import * as Joi from 'joi';
 
 console.log('NODE_ENV:', process.env.NODE_ENV);
@@ -23,7 +25,9 @@ console.log('NODE_ENV:', process.env.NODE_ENV);
       }),
     }),
     ExhibitionModule,
-    ProjectModule
+    NewsModule,
+    CatalogModule,
+    ProductModule
   ],
 })
 

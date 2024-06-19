@@ -50,6 +50,45 @@ model Cat {
   breed String
 }
 
+model Category {
+  id          Int       @id @default(autoincrement())
+  name        String
+  products    Product[] @relation("CategoryProducts")
+}
+
+model Product {
+  id              Int       @id @default(autoincrement())
+  title           String
+  description     String?
+  price           Float
+  oldPrice        Float?
+  rating          Float?
+  images          Image[]   @relation("ProductImages")
+  links           String[]  // Массив строк для хранения ссылок
+  categoryId      Int?
+  category        Category? @relation("CategoryProducts", fields: [categoryId], references: [id])
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt 
+  catalogs        Catalog[] @relation("CatalogProducts")
+  pinnedInCatalog Catalog[] @relation("PinnedProduct")
+  isPinned        Boolean   @default(false)
+}
+
+model Catalog {
+  id               Int       @id @default(autoincrement())
+  title            String
+  description      String?
+  date             DateTime?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt 
+  images           Image[]   @relation("CatalogImages")
+  links            String[]  // Массив строк для хранения ссылок
+  pinnedProductId  Int?
+  pinnedProduct    Product?  @relation("PinnedProduct", fields: [pinnedProductId], references: [id])
+  products         Product[] @relation("CatalogProducts")
+  isPinned        Boolean   @default(false)
+}
+
 model Exhibition {
   id          Int       @id @default(autoincrement())
   title       String
@@ -58,34 +97,32 @@ model Exhibition {
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt 
   images      Image[]   @relation("ExhibitionImages")
+  links       String[]  // Массив строк для хранения ссылок
+  isPinned    Boolean   @default(false) 
 }
 
-model Project {
+model News {
   id          Int       @id @default(autoincrement())
   title       String
   description String?
   date        DateTime?
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt 
-  images      Image[]   @relation("ProjectImages")
-}
-
-model Product {
-  id          Int       @id @default(autoincrement())
-  name        String
-  description String?
-  price       Float
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  images      Image[]   @relation("NewsImages")
+  links       String[]  // Массив строк для хранения ссылок
+  isPinned    Boolean   @default(false)
 }
 
 model Image {
   id           Int       @id @default(autoincrement())
   url          String
   exhibitionId Int?      // Поле для связи с выставками
-  projectId    Int?      // Поле для связи с проектами
+  newsId       Int?      // Поле для связи с проектами
   productId    Int?      // Поле для связи с продуктами
+  catalogId    Int?      // Поле для связи с каталогом
   exhibition   Exhibition? @relation("ExhibitionImages", fields: [exhibitionId], references: [id])
-  project      Project?    @relation("ProjectImages", fields: [projectId], references: [id])
-  
+  news         News?       @relation("NewsImages", fields: [newsId], references: [id])
+  catalog      Catalog?    @relation("CatalogImages", fields: [catalogId], references: [id])
+  product      Product?    @relation("ProductImages", fields: [productId], references: [id])
+
 }

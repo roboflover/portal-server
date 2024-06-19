@@ -1,16 +1,15 @@
-// src/Project/Project.controller.ts
+// src/News/News.controller.ts
 
 import { Controller, Post, Body, UploadedFile, UseInterceptors, HttpException, HttpStatus, Get, Param, Patch, Delete } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { ProjectService } from './project.service';
-import { CreateProjectDto } from './dto/create-project.dto';
+import { NewsService } from './news.service';
+import { CreateNewsDto } from './dto/create-news.dto';
 import axios from 'axios';
 
-@Controller('project')
-export class ProjectController {
+@Controller('news')
+export class NewsController {
   constructor(
-    private readonly todoService: ProjectService,
-    private readonly projectService: ProjectService,
+    private readonly newsService: NewsService,
   ) {}
 
   @Post('upload')
@@ -23,7 +22,7 @@ export class ProjectController {
     try {
       let imageUrl;
       if (file) {
-        imageUrl = await this.projectService.uploadFile(file, title, description);
+        imageUrl = await this.newsService.uploadFile(file, title, description);
         // console.log(Файл загружен успешно. URL изображения: ${imageUrl});
       } else {
         throw new HttpException('Файл не найден', HttpStatus.BAD_REQUEST);
@@ -36,27 +35,27 @@ export class ProjectController {
   }
 
   @Post()
-  create(@Body() createProjectDto: CreateProjectDto) {
-    return this.todoService.create(createProjectDto);
+  create(@Body() createNewsDto: CreateNewsDto) {
+    return this.newsService.create(createNewsDto);
   }
  
   @Get()
   findAll() {
-    return this.todoService.findAll();
+    return this.newsService.findAll();
   }
 
   @Get(':id')
   findOne(@Param('id') id: number) {
-    return this.todoService.findOne(id);
+    return this.newsService.findOne(id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateProjectDto: CreateProjectDto) {
-    return this.todoService.update(+id, updateProjectDto);
+  update(@Param('id') id: string, @Body() updateNewsDto: CreateNewsDto) {
+    return this.newsService.update(+id, updateNewsDto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    this.todoService.deleteFileById(id);
+    this.newsService.deleteFileById(id);
   }
 }
