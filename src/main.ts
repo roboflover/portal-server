@@ -13,7 +13,7 @@ async function bootstrap() {
     });
   }
   app.enableCors();
-  await app.listen(8080); 
+  await app.listen(8085); 
   console.log(`frontend url ${frontendUrl}`)
 }
 bootstrap();
