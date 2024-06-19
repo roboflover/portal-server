@@ -14,6 +14,6 @@ async function bootstrap() {
   }
   app.enableCors();
   await app.listen(8085); 
-  console.log(`frontend url ${frontendUrl}`)
+  console.log(`frontend url ${frontendUrl}:8085`)
 }
 bootstrap();
