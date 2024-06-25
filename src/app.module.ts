@@ -5,19 +5,19 @@ import { UsersModule } from './users/users.module';
 import { PostModule } from './post/post.module';
 import { ConfigModule } from '@nestjs/config';
 import { ExhibitionModule } from './exhibition/exhibition.module';
-import { NewsModule } from './news/news.module'
+import { NewsModule } from './news/news.module';
 import { CatalogModule } from './catalog/catalog.module';
 import { ProductModule } from './product/product.module';
+import { MailModule } from './mail/mail.module'; // Убедитесь, что путь и имя корректны
 import * as Joi from 'joi';
 
 console.log('NODE_ENV:', process.env.NODE_ENV);
-   
 
 @Module({
   imports: [
-    CatsModule, 
-    AuthModule, 
-    UsersModule, 
+    CatsModule,
+    AuthModule,
+    UsersModule,
     PostModule,
     ConfigModule.forRoot({
       validationSchema: Joi.object({
@@ -27,8 +27,8 @@ console.log('NODE_ENV:', process.env.NODE_ENV);
     ExhibitionModule,
     NewsModule,
     CatalogModule,
-    ProductModule
+    ProductModule,
+    MailModule, // Убедитесь, что модуль импортируется правильно
   ],
 })
-
 export class AppModule {}

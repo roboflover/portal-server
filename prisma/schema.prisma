@@ -10,12 +10,15 @@ datasource db {
 }
 
 model User {
-  id        Int     @default(autoincrement()) @id
-  email     String  @unique
-  name      String?
-  password  String
-  posts     Post[]
-  role      String  @default("user")
+  id                Int      @default(autoincrement()) @id
+  email             String   @unique
+  name              String?
+  password          String
+  avatar            String?  // Поле для хранения URL аватара пользователя
+  verificationToken String?  // Поле для хранения токена подтверждения
+  isEmailVerified   Boolean  @default(false) // Поле для отслеживания подтверждения email
+  posts             Post[]
+  role              String   @default("user")
 }
 
 model Post {
