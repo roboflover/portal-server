@@ -6,6 +6,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const configService = app.get(ConfigService);
   const frontendUrl = configService.get('FRONTEND_URL');
+  const port = configService.get('PORT');
   if (frontendUrl) {
     app.enableCors({
       origin: frontendUrl,
@@ -13,6 +14,7 @@ async function bootstrap() {
     });
   }
   app.enableCors();
-  await app.listen(80); 
+  await app.listen(port); 
+  console.log('port', port)
 }
 bootstrap();
