@@ -1,0 +1,27 @@
+version: '3'
+
+services:
+  nestjs:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+
+  nginx:
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    ports:
+      - "443:443"
+    depends_on:
+      - nestjs
+
+  certbot:
+    build:
+      context: ./certbot
+    volumes:
+      - ./nginx/certs:/shared/certificates
+      - ./nginx/certs:/etc/letsencrypt
+      - /var/www/certbot:/var/www/certbot
+    entrypoint: ["sh", "-c", "trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;"]
