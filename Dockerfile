@@ -3,7 +3,7 @@ FROM node:20.1 AS builder
 
 WORKDIR /app
 
-COPY package.json package-lock.json ./s
+COPY package.json package-lock.json ./
 RUN npm install
 
 COPY . .
