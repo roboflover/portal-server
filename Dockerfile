@@ -18,12 +18,13 @@ WORKDIR /app
 
 # Установите зависимости для сборки sharp
 RUN apt-get update && apt-get install -y \
-    libc6-compat \
-    libjpeg-turbo-dev \
+    libc6-dev \
+    libjpeg62-turbo-dev \
     libpng-dev \
     libtool \
-    build-base \
-    nasm
+    build-essential \
+    nasm \
+    && rm -rf /var/lib/apt/lists/*
 
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/node_modules ./node_modules
