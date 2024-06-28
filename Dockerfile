@@ -1,5 +1,5 @@
 # Stage 1: Build the NestJS application
-FROM node:20.15 AS builder
+FROM node:20.1 AS builder
 
 WORKDIR /app
 
@@ -12,7 +12,7 @@ RUN npm run build
 RUN npx prisma generate
 
 # Stage 2: Run the NestJS application
-FROM node:20.15-alpine
+FROM node:20.1-bullseye-slim
 
 WORKDIR /app
 
