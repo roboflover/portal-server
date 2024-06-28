@@ -16,6 +16,15 @@ FROM node:20.15-alpine
 
 WORKDIR /app
 
+# Установите зависимости для сборки sharp
+RUN apk add --no-cache \
+    libc6-compat \
+    libjpeg-turbo-dev \
+    libpng-dev \
+    libtool \
+    build-base \
+    nasm
+
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/package.json ./package.json
