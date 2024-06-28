@@ -1,5 +1,5 @@
 # Stage 1: Build the NestJS application
-FROM node:20.3 AS builder
+FROM node:21.0 AS builder
 
 WORKDIR /app
 
