@@ -17,7 +17,7 @@ FROM node:20.1-bullseye-slim
 WORKDIR /app
 
 # Установите зависимости для сборки sharp
-RUN apk add --no-cache \
+RUN apt-get update && apt-get install -y \
     libc6-compat \
     libjpeg-turbo-dev \
     libpng-dev \
