@@ -1,9 +1,9 @@
 # Stage 1: Build the NestJS application
-FROM node:21.0 AS builder
+FROM node:20.15 AS builder
 
 WORKDIR /app
 
-COPY package.json package-lock.json ./
+COPY package.json package-lock.json ./s
 RUN npm install
 
 COPY . .
@@ -12,7 +12,7 @@ RUN npm run build
 RUN npx prisma generate
 
 # Stage 2: Run the NestJS application
-FROM node:20.3-alpine
+FROM node:20.15-alpine
 
 WORKDIR /app
 
