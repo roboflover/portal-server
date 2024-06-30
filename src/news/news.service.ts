@@ -29,7 +29,10 @@ export class NewsService {
 
   async uploadFile(file: Express.Multer.File, title: string, description): Promise<string> {
     const resizedBuffer = await sharp(file.buffer)
-      .resize(800, 600) // Измените размеры по вашему усмотрению
+      .resize(1280, 1024, {
+        fit: 'cover', 
+        position: 'center' 
+      })
       .toBuffer();
   
     const newFileName = `image-${Date.now()}.jpg`;
