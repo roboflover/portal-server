@@ -23,7 +23,7 @@ export class NewsController {
       let imageUrl;
       if (file) {
         imageUrl = await this.newsService.uploadFile(file, title, description);
-        console.log(Файл загружен успешно. URL изображения: ${imageUrl});
+        console.log(`Файл загружен успешно. URL изображения: ${imageUrl}`);
       } else {
         throw new HttpException('Файл не найден', HttpStatus.BAD_REQUEST);
       }
