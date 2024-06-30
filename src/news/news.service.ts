@@ -35,7 +35,7 @@ export class NewsService {
         position: 'center' 
       })
       .toBuffer();
-  
+    console.log('resizedBuffer', resizedBuffer)
     const newFileName = `image-${Date.now()}.jpg`;
   
     const params = {
