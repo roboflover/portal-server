@@ -29,6 +29,7 @@ export class NewsService {
 
   async uploadFile(file: Express.Multer.File, title: string, description): Promise<string> {
     const resizedBuffer = await sharp(file.buffer)
+      .rotate() 
       .resize(1280, 1024, {
         fit: 'cover', 
         position: 'center' 
