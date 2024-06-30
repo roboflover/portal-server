@@ -34,7 +34,9 @@ export class CatalogService {
     price: number, 
     isPinned: boolean, 
     links: string[]): Promise<string> {
+      
       const resizedBuffer = await sharp(file.buffer)
+      .rotate() 
       .resize(1280, 1024, {
         fit: 'cover', 
         position: 'center' 
