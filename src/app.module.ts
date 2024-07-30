@@ -9,6 +9,8 @@ import { NewsModule } from './news/news.module';
 import { CatalogModule } from './catalog/catalog.module';
 import { ProductModule } from './product/product.module';
 import { MailModule } from './mail/mail.module'; // Убедитесь, что путь и имя корректны
+import { OrderPrint3dModule } from './order-print3d/order-print3d.module';
+import { OrderCatalogModule } from './order-catalog/order-catalog.module';
 import * as Joi from 'joi';
 
 console.log('NODE_ENV:', process.env.NODE_ENV);
@@ -28,7 +30,9 @@ console.log('NODE_ENV:', process.env.NODE_ENV);
     NewsModule,
     CatalogModule,
     ProductModule,
-    MailModule, // Убедитесь, что модуль импортируется правильно
+    MailModule,
+    OrderPrint3dModule,
+    OrderCatalogModule, // Убедитесь, что модуль импортируется правильно
   ],
 })
 export class AppModule {}

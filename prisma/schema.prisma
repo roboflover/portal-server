@@ -1,12 +1,51 @@
 generator client {
   provider = "prisma-client-js"
-  binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
+  binaryTargets = ["native", "debian-openssl-1.1.x"]
+  // binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
 }
 
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
   shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
+}
+
+model OrderPrint3d {
+  id               Int             @id @default(autoincrement())
+  orderNumber      Int?            
+  quantity         Int?  
+  summa            Float?
+  fileSize         Float?
+  fileName         String?
+  orderDetails     String?
+  shoppingCartItems ItemPrint3d[]
+  deliveryAddress  String?
+  customerName     String?
+  customerEmail    String?
+  customerPhone    String?
+  orderStatus      String?
+  comment          String?
+  modelUrl         String?
+  models3d         Model3d[]    // Создаем отношение для 3D моделей
+}
+
+model Model3d {
+  id           Int           @id @default(autoincrement())
+  modelName    String
+  modelUrl     String
+  orderPrint3d OrderPrint3d? @relation(fields: [orderPrint3dId], references: [id])
+  orderPrint3dId Int?
+}
+
+model ItemPrint3d {
+  id            Int           @id @default(autoincrement())
+  itemName      String
+  itemQuantity  Int
+  itemPrice     Float
+  itemDetails   String        // Поле хранит описание или дополнительные детали для объекта
+  item3DModel   String        // Поле для ссылки на 3D модель
+  orderId       Int
+  order         OrderPrint3d   @relation(fields: [orderId], references: [id])
 }
 
 model User {
@@ -19,6 +58,15 @@ model User {
   isEmailVerified   Boolean  @default(false) // Поле для отслеживания подтверждения email
   posts             Post[]
   role              String   @default("user")
+  emailVerificationTokens EmailVerificationToken[] // Связь с токенами верификации
+}
+
+model EmailVerificationToken {
+  token   String @id
+  userId  Int
+  user    User   @relation(fields: [userId], references: [id])
+
+  @@index([userId])
 }
 
 model Post {

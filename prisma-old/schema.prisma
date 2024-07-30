@@ -7,6 +7,30 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model OrderPrint3d {
+  id               Int             @id @default(autoincrement())
+  orderNumber      Int             @unique
+  orderName        String
+  orderDetails     String
+  shoppingCartItems ItemPrint3d[]
+  deliveryAddress  String
+  customerName     String
+  customerEmail    String
+  orderStatus      String
+  comment          String?
+}
+
+model ItemPrint3d {
+  id            Int           @id @default(autoincrement())
+  itemName      String
+  itemQuantity  Int
+  itemPrice     Float
+  itemDetails   String        
+  item3DModel   String        // Поле для ссылки на 3D модель
+  orderId       Int
+  order         OrderPrint3d   @relation(fields: [orderId], references: [id])
+}
+
 model User {
   id    Int     @default(autoincrement()) @id
   email String  @unique

@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "OrderPrint3d" ALTER COLUMN "fileSize" SET DATA TYPE DOUBLE PRECISION;

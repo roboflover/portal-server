@@ -15,12 +15,13 @@ export class AuthGuard implements CanActivate {
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
-    const token = this.extractTokenFromHeader(request);
+    const token = this.extractToken(request);
+
     if (!token) {
       console.error('No token provided');
       throw new UnauthorizedException('No token provided');
     }
-    try {
+    try { 
       const payload = await this.jwtService.verifyAsync(
         token,
         {
@@ -30,14 +31,24 @@ export class AuthGuard implements CanActivate {
 
       request['user'] = payload;
     } catch (err) {
-      console.error('Invalid token', err.message);
+      console.error('Invalid token!', err.message);
       throw new UnauthorizedException('Invalid token');
     }
     return true;
   }
 
-  private extractTokenFromHeader(request: Request): string | undefined {
-    const [type, token] = request.headers.authorization?.split(' ') ?? [];
-    return type === 'Bearer' ? token : undefined;
+  private extractToken(request: any): string | null {
+    // Extract token from header
+    const authHeader = request.headers['authorization'];
+    if (authHeader && authHeader.startsWith('Bearer ')) {
+      return authHeader.split(' ')[1];
+    }
+    
+    // Extract token from query parameter
+    if (request.query && request.query.token) {
+      return request.query.token;
+    }
+
+    return null;
   }
 }
