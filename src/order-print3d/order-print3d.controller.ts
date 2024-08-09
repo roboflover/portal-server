@@ -21,8 +21,7 @@ export class OrderPrint3dController {
       if (!file) {
         throw new HttpException('Файл не найден', HttpStatus.BAD_REQUEST);
       }
-
-      const modelUrl = await this.orderPrint3dService.uploadFile(file, data)
+      await this.orderPrint3dService.uploadFile(file, data)
 
     } catch (error) {
       console.error('Ошибка при загрузке файла или создании заказа на печать:', error);

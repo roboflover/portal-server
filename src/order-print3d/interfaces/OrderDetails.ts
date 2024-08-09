@@ -10,4 +10,5 @@ export interface OrderDetails {
     deliveryAddress?: string;
     summa?: number;
     quantity?: number;
+    comment?: string;
 }

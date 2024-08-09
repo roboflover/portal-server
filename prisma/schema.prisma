@@ -10,6 +10,21 @@ datasource db {
   shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
 }
 
+model OrderCatalog {
+  id               Int             @id @default(autoincrement())
+  orderNumber      Int?   
+  orderTitle       String? 
+  orderDescription String?         
+  quantity         Int?  
+  summa            Float?
+  deliveryAddress  String?
+  customerName     String?
+  customerEmail    String?
+  customerPhone    String?
+  orderStatus      String?
+  comment          String?
+}
+
 model OrderPrint3d {
   id               Int             @id @default(autoincrement())
   orderNumber      Int?            
@@ -176,4 +191,24 @@ model Image {
   catalog      Catalog?    @relation("CatalogImages", fields: [catalogId], references: [id])
   product      Product?    @relation("ProductImages", fields: [productId], references: [id])
 
+}
+
+model Review3dPrint {
+  id          Int       @id @default(autoincrement())
+  title       String
+  description String?
+  date        DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  images      ReviewImage[]   @relation("ReviewImages")
+  links       String[]  // Массив строк для хранения ссылок
+  isPinned    Boolean   @default(false)
+}
+
+model ReviewImage {
+  id           Int      @id @default(autoincrement())
+  url          String
+  review       Review3dPrint?  @relation("ReviewImages", fields: [reviewId], references: [id])
+  reviewId     Int?
+  createdAt    DateTime @default(now())
 }

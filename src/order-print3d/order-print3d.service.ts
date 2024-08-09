@@ -20,7 +20,7 @@ export class OrderPrint3dService {
   }
 
   async uploadFile(file: Express.Multer.File, orderPrint3dData:OrderDetails): Promise<string> {
-    console.log(orderPrint3dData)
+
     const newFileName = `model-${Date.now()}.stl`;
 
     const params = {
@@ -47,6 +47,7 @@ export class OrderPrint3dService {
         customerPhone: orderPrint3dData.customerPhone,
         summa: Number(orderPrint3dData.summa),
         quantity: Number(orderPrint3dData.quantity),
+        comment: orderPrint3dData.comment,
         fileSize: fileSize,
         modelUrl: modelUrl
       };

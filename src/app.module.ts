@@ -11,6 +11,7 @@ import { ProductModule } from './product/product.module';
 import { MailModule } from './mail/mail.module'; // Убедитесь, что путь и имя корректны
 import { OrderPrint3dModule } from './order-print3d/order-print3d.module';
 import { OrderCatalogModule } from './order-catalog/order-catalog.module';
+import { ReviewPrint3dModule } from './review-print3d/review-print3d.module';
 import * as Joi from 'joi';
 
 console.log('NODE_ENV:', process.env.NODE_ENV);
@@ -32,7 +33,8 @@ console.log('NODE_ENV:', process.env.NODE_ENV);
     ProductModule,
     MailModule,
     OrderPrint3dModule,
-    OrderCatalogModule, // Убедитесь, что модуль импортируется правильно
+    OrderCatalogModule,
+    ReviewPrint3dModule,
   ],
 })
 export class AppModule {}
