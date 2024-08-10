@@ -17,7 +17,6 @@ export class OrderPrint3dController {
     @Body() data: CreateOrderPrint3dDto,
   ): Promise<void> {
     try {
-
       if (!file) {
         throw new HttpException('Файл не найден', HttpStatus.BAD_REQUEST);
       }

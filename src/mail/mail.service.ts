@@ -8,10 +8,27 @@ import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class EmailService {
+
   constructor(
     private readonly mailerService: MailerService,
     private readonly prisma: PrismaService,
   ) {}
+
+  async sendMailOrder(mailOptions: { to: string; subject: string; text: string }) {
+    const text = mailOptions.text
+    await this.mailerService.sendMail({
+      to: mailOptions.to,
+      subject: 'Order Verification',
+      template: './orderPrint',
+      context: {
+        text,
+      },
+    });
+  }
+
+  // sendMail(arg0: { to: string; subject: string; text: string; }) {
+  //   throw new Error('Method not implemented.');
+  // }
 
   async sendVerificationEmail(email: string, token: string) {
     const app = await NestFactory.create(AppModule);
@@ -66,8 +83,6 @@ export class EmailService {
       },
     });
 
-
-
     return true;
   }
 
@@ -79,3 +94,4 @@ export class EmailService {
     });
   }
 }
+

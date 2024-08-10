@@ -2,12 +2,10 @@ import { Injectable, InternalServerErrorException, NotFoundException } from '@ne
 import { DeleteObjectCommand, PutObjectCommand } from '@aws-sdk/client-s3';
 import { s3Client } from '../s3client';
 import * as dotenv from 'dotenv';
-import * as sharp from 'sharp';
 import { PrismaService } from '../prisma/prisma.service';
-import { OrderPrint3d, Prisma } from '@prisma/client';
-import * as fs from 'fs';
-import { OrderDetails } from './interfaces/OrderDetails';
 import { CreateOrderPrint3dDto } from './dto/create-order-print3d.dto';
+import { EmailService } from '../mail/mail.service';
+import { Prisma } from '@prisma/client';
 
 dotenv.config(); // Загружаем переменные окружения
 
@@ -15,12 +13,14 @@ dotenv.config(); // Загружаем переменные окружения
 export class OrderPrint3dService {
   private bucket: string;
 
-  constructor(private readonly prisma: PrismaService) {
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly emailService: EmailService, // Внедрение EmailService
+  ) {
     this.bucket = process.env.S3_BUCKET_STL;
   }
 
-  async uploadFile(file: Express.Multer.File, orderPrint3dData:OrderDetails): Promise<string> {
-
+  async uploadFile(file: Express.Multer.File, orderPrint3dData: CreateOrderPrint3dDto) {
     const newFileName = `model-${Date.now()}.stl`;
 
     const params = {
@@ -28,18 +28,17 @@ export class OrderPrint3dService {
       Key: newFileName,
       Body: file.buffer,
       ContentType: file.mimetype,
-    }
+    };
 
     try {
-
-      const fileSize = file.size
+      const fileSize = file.size;
 
       await s3Client.send(new PutObjectCommand(params));
       const modelUrl = `https://storage.yandexcloud.net/${this.bucket}/${newFileName}`;
 
       const orderDetails = {
         fileName: orderPrint3dData.fileName,
-        orderDetails: orderPrint3dData.orderDetails,
+        orderDetails: orderPrint3dData.orderDetails, // Убедитесь, что это поле существует и передано в Body
         orderNumber: Number(orderPrint3dData.orderNumber),
         customerName: orderPrint3dData.customerName,
         customerEmail: orderPrint3dData.customerEmail,
@@ -49,24 +48,29 @@ export class OrderPrint3dService {
         quantity: Number(orderPrint3dData.quantity),
         comment: orderPrint3dData.comment,
         fileSize: fileSize,
-        modelUrl: modelUrl
+        modelUrl: modelUrl,
       };
 
       const orderPrint3d = await this.prisma.orderPrint3d.create({
-        data: orderDetails
+        data: orderDetails,
       });
-    
+
       if (!orderPrint3d) {
         throw new NotFoundException(`OrderPrint3d with title ${orderPrint3dData.orderNumber} not found`);
       }
-      
-      return modelUrl;
-      
+      const orderDetailsString = JSON.stringify(orderDetails);
+
+      await this.emailService.sendMailOrder({
+        to: 'portal@robobug.ru',
+        subject: `Новый заказ`,
+        text: orderDetailsString,
+      });
+
     } catch (error) {
       throw new Error(`Ошибка при загрузке файла: ${error.message}`);
     }
-
   }
+
 
   async findOrderNumber(): Promise<number | null> {
     const lastOrder = await this.prisma.orderPrint3d.findFirst({
