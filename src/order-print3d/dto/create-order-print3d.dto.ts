@@ -1,47 +1,92 @@
-import { IsString, IsOptional, IsBoolean, IsInt, IsEmail, IsArray, ValidateNested, IsNumber } from 'class-validator';  
-import { Prisma } from '@prisma/client';  
-import { Type } from 'class-transformer'; 
+import {
+  IsString,
+  IsOptional,
+  IsBoolean,
+  IsInt,
+  IsEmail,
+  IsArray,
+  IsNumber,
+  ValidateNested,
+} from 'class-validator';
+import { Prisma } from '@prisma/client';
+import { Type } from 'class-transformer';
+
+export class CreateOrderPrint3dDto implements Prisma.OrderPrint3dCreateInput, Prisma.OrderPrint3dUpdateInput {
   
-export class CreateOrderPrint3dDto implements Prisma.OrderPrint3dCreateInput, Prisma.OrderPrint3dUpdateInput {  
-    
+  @IsInt()
+  id: number;
+
   @IsNumber()
-  summa: number
+  @IsOptional()
+  orderNumber?: number;
 
   @IsInt()
-  quantity: number 
+  quantity: number;
 
-  @IsNumber()  
-  orderNumber: number; 
- 
-  @IsString()  
-  fileName: string; 
+  @IsNumber()
+  summa: number;
 
-  @IsString()  
-  fileSize: number; 
-
-  @IsString()  
-  orderDetails: string; 
- 
-  @IsString() 
-  deliveryAddress: string; 
- 
-  @IsString() 
-  customerName: string; 
-
-  @IsString() 
-  customerPhone: string; 
+  @IsNumber()
+  fileSize: number;
   
-  @IsEmail() 
-  customerEmail?: string; 
-   
-  @IsString() 
-  orderStatus?: string; 
- 
-  @IsString() 
-  @IsOptional() 
-  comment?: string; 
- 
-  @IsString() 
-  modelUrl?: string; 
- 
-} 
+  @IsString()
+  fileName: string;
+
+  @IsString()
+  material: string;
+
+  @IsNumber()
+  width: number;
+
+  @IsNumber()
+  length: number;
+
+  @IsNumber()
+  height: number;
+
+  @IsNumber()
+  volume: number;
+
+  @IsNumber()
+  color: string;
+
+  @IsString()
+  @IsOptional()
+  orderDetails?: string;
+
+  @IsString()
+  @IsOptional()
+  deliveryAddress?: string;
+
+  @IsString()
+  @IsOptional()
+  deliveryCity?: string;
+
+  @IsString()
+  customerName: string;
+
+  @IsEmail()
+  customerEmail: string;
+
+  @IsString()
+  customerPhone: string;
+
+  @IsString()
+  orderStatus: string;
+
+  @IsString()
+  @IsOptional()
+  comment?: string;
+
+  @IsString()
+  @IsOptional()
+  modelUrl?: string;
+
+  @IsBoolean()
+  @IsOptional()
+  disable?: boolean;
+
+  @IsString()
+  @IsOptional()
+  paymentId?: string;
+}

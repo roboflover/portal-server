@@ -1,4 +1,4 @@
-import { Controller, Post, Body, UploadedFile, UseInterceptors, HttpException, HttpStatus, Get, Param, Patch, Delete } from '@nestjs/common';
+import { Controller, Post, Body, UploadedFile, UseInterceptors, HttpException, HttpStatus, Get, Param, Patch, Delete, Query } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { OrderPrint3dService } from './order-print3d.service';
 import { CreateOrderPrint3dDto } from './dto/create-order-print3d.dto';
@@ -13,19 +13,27 @@ export class OrderPrint3dController {
   @Post('upload')
   @UseInterceptors(FileInterceptor('file'))
   async uploadAndCreateOrder(
-    @UploadedFile() file: Express.Multer.File,
+    @UploadedFile() file: Express.Multer.File,  
     @Body() data: CreateOrderPrint3dDto,
   ): Promise<void> {
+    console.log('data')
     try {
       if (!file) {
         throw new HttpException('Файл не найден', HttpStatus.BAD_REQUEST);
       }
       await this.orderPrint3dService.uploadFile(file, data)
-
     } catch (error) {
       console.error('Ошибка при загрузке файла или создании заказа на печать:', error);
       throw new HttpException('Внутренняя ошибка сервера', HttpStatus.INTERNAL_SERVER_ERROR);
     }   
+  }
+
+  @Get('getOrders')
+  async getOrders(@Query('email') email: string) {
+    if (!email) {
+      throw new Error('Email is required');
+    }
+    return this.orderPrint3dService.getOrdersByEmail(email);
   }
 
   @Get('orderNumber')

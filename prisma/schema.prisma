@@ -26,22 +26,31 @@ model OrderCatalog {
 }
 
 model OrderPrint3d {
-  id               Int             @id @default(autoincrement())
+  id               Int @id @default(autoincrement())
   orderNumber      Int?            
-  quantity         Int?  
-  summa            Float?
-  fileSize         Float?
-  fileName         String?
+  quantity         Int
+  summa            Float
+  fileSize         Float
+  fileName         String
+  material         String
+  width            Float
+  length           Float
+  height           Float
+  volume           Float
+  color            String
   orderDetails     String?
   shoppingCartItems ItemPrint3d[]
   deliveryAddress  String?
-  customerName     String?
-  customerEmail    String?
-  customerPhone    String?
+  deliveryCity     String?
+  customerName     String
+  customerEmail    String
+  customerPhone    String
   orderStatus      String?
   comment          String?
   modelUrl         String?
-  models3d         Model3d[]    // Создаем отношение для 3D моделей
+  disable          Boolean? @default(false)
+  paymentId        String?
+  models3d         Model3d[]
 }
 
 model Model3d {
