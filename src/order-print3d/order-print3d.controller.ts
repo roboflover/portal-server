@@ -16,7 +16,7 @@ export class OrderPrint3dController {
     @UploadedFile() file: Express.Multer.File,  
     @Body() data: CreateOrderPrint3dDto,
   ): Promise<void> {
-    console.log(data.material)
+    console.log(data)
     try {
       if (!file) {
         throw new HttpException('Файл не найден', HttpStatus.BAD_REQUEST);

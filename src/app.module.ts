@@ -14,8 +14,6 @@ import { OrderCatalogModule } from './order-catalog/order-catalog.module';
 import { ReviewPrint3dModule } from './review-print3d/review-print3d.module';
 import * as Joi from 'joi';
 
-console.log('NODE_ENV:', process.env.NODE_ENV);
-
 @Module({
   imports: [
     CatsModule,
