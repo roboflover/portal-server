@@ -22,4 +22,5 @@
     modelUrl?: string;
     disable?: boolean;
     paymentId?: string;
+    cdekEntityUuid?: string;
   }

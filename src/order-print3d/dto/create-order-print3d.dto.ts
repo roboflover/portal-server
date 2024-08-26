@@ -89,4 +89,9 @@ export class CreateOrderPrint3dDto implements Prisma.OrderPrint3dCreateInput, Pr
   @IsString()
   @IsOptional()
   paymentId?: string;
+
+  @IsString()
+  @IsOptional()
+  cdekEntityUuid?: string;
+
 }

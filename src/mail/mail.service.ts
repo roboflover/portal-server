@@ -18,7 +18,7 @@ export class EmailService {
     const text = mailOptions.text
     await this.mailerService.sendMail({
       to: mailOptions.to,
-      subject: 'Order Verification',
+      subject: 'Новый заказ на 3D печать!',
       template: './orderPrint',
       context: {
         text,

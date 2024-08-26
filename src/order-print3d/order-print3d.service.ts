@@ -41,7 +41,7 @@ export class OrderPrint3dService {
 
       await s3Client.send(new PutObjectCommand(params));
       const modelUrl = `https://storage.yandexcloud.net/${this.bucket}/${newFileName}`;
-
+      console.log(orderPrint3dData.cdekEntityUuid)
       const orderDetails = {
         fileName: orderPrint3dData.fileName,
         orderDetails: orderPrint3dData.orderDetails,
@@ -57,7 +57,6 @@ export class OrderPrint3dService {
         fileSize: fileSize,
         modelUrl: modelUrl,
         material: orderPrint3dData.material,
-        // Преобразование строк или null в числа
         width: Number(orderPrint3dData.width),
         length: Number(orderPrint3dData.length),
         height: Number(orderPrint3dData.height),
@@ -66,8 +65,8 @@ export class OrderPrint3dService {
         orderStatus: orderPrint3dData.orderStatus,
         disable: orderPrint3dData.disable,
         paymentId: orderPrint3dData.paymentId,
+        cdekEntityUuid: orderPrint3dData.cdekEntityUuid
       };
-      // console.log(orderPrint3dData.deliveryCity)
       const orderPrint3d = await this.prisma.orderPrint3d.create({
         data: orderDetails,
       });
@@ -121,6 +120,7 @@ export class OrderPrint3dService {
       await s3Client.send(new DeleteObjectCommand(params));
     }
 
+    
     await this.prisma.orderPrint3d.delete({ where: { id: idAsNumber } });
   }
 
