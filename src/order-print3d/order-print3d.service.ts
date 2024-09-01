@@ -6,6 +6,7 @@ import { PrismaService } from '../prisma/prisma.service';
 import { CreateOrderPrint3dDto } from './dto/create-order-print3d.dto';
 import { EmailService } from '../mail/mail.service';
 import { Prisma, OrderPrint3d } from '@prisma/client';
+import { date } from 'joi';
 // import { YooCheckout } from '@a2seven/yoo-checkout';
 
 dotenv.config();
@@ -38,10 +39,11 @@ export class OrderPrint3dService {
 
     try {
       const fileSize = file.size;
-
       await s3Client.send(new PutObjectCommand(params));
       const modelUrl = `https://storage.yandexcloud.net/${this.bucket}/${newFileName}`;
-      console.log(orderPrint3dData.cdekEntityUuid)
+      const dateTime = new Date();
+      const dateTimeLocaleString = dateTime.toLocaleString();
+
       const orderDetails = {
         fileName: orderPrint3dData.fileName,
         orderDetails: orderPrint3dData.orderDetails,
@@ -65,7 +67,8 @@ export class OrderPrint3dService {
         orderStatus: orderPrint3dData.orderStatus,
         disable: orderPrint3dData.disable,
         paymentId: orderPrint3dData.paymentId,
-        cdekEntityUuid: orderPrint3dData.cdekEntityUuid
+        cdekEntityUuid: orderPrint3dData.cdekEntityUuid,
+        creationTime: dateTimeLocaleString
       };
       const orderPrint3d = await this.prisma.orderPrint3d.create({
         data: orderDetails,

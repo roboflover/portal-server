@@ -23,4 +23,5 @@
     disable?: boolean;
     paymentId?: string;
     cdekEntityUuid?: string;
+    creationTime?: string;
   }
