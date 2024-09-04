@@ -52,7 +52,7 @@ model OrderPrint3d {
   paymentId        String?
   models3d         Model3d[]
   cdekEntityUuid   String?
-  creationTime     String?
+  creationTime     DateTime @default(now())
 }
 
 model Model3d {

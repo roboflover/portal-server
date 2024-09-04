@@ -68,7 +68,7 @@ export class OrderPrint3dService {
         disable: orderPrint3dData.disable,
         paymentId: orderPrint3dData.paymentId,
         cdekEntityUuid: orderPrint3dData.cdekEntityUuid,
-        creationTime: dateTimeLocaleString
+        creationTime: dateTime
       };
       const orderPrint3d = await this.prisma.orderPrint3d.create({
         data: orderDetails,
