@@ -16,7 +16,7 @@ export class CreateOrderPrint3dDto implements Prisma.OrderPrint3dCreateInput, Pr
   @IsInt()
   id: number;
 
-  @IsNumber()
+  @IsString()
   @IsOptional()
   orderNumber?: string;
 
@@ -47,7 +47,7 @@ export class CreateOrderPrint3dDto implements Prisma.OrderPrint3dCreateInput, Pr
   @IsNumber()
   volume: number;
 
-  @IsNumber()
+  @IsString()
   color: string;
 
   @IsString()
