@@ -63,7 +63,7 @@ export class OrderPrint3dController {
 
   @Patch(':orderNumber/status')
   async updateOrderStatus(
-    @Param('orderNumber') orderNumber: number,
+    @Param('orderNumber') orderNumber: string,
     @Body('newStatus') newStatus: string
   ) {
     return this.orderPrint3dService.updateOrderStatus(orderNumber, newStatus);

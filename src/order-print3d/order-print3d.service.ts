@@ -215,7 +215,7 @@ export class OrderPrint3dService {
     return orders;
   }
   
-  async updateOrderStatus(orderNumber: number, newStatus: string): Promise<OrderPrint3d> {
+  async updateOrderStatus(orderNumber: string, newStatus: string): Promise<OrderPrint3d> {
     return this.prisma.orderPrint3d.update({
       where: { id: Number(orderNumber) },
       data: { orderStatus: newStatus },
