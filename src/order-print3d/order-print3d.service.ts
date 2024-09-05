@@ -146,7 +146,7 @@ export class OrderPrint3dService {
     }
   }
 
-  async findOrderNumber(): Promise<string | null> {
+  async findOrderNumber(): Promise<string> {
     const lastOrder = await this.prisma.orderPrint3d.findFirst({
       orderBy: {
         orderNumber: 'desc',
