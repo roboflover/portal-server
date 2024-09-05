@@ -1,6 +1,6 @@
   export interface OrderDetails {
     id: number;
-    orderNumber?: number;          
+    orderNumber?: string;          
     quantity: number; 
     summa: number;
     fileSize: number;
@@ -17,7 +17,7 @@
     customerName: string;
     customerEmail: string;
     customerPhone: string;
-    orderStatus: string;
+    orderStatus?: string;
     comment?: string;
     modelUrl?: string;
     disable?: boolean;

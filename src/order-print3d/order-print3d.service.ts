@@ -7,13 +7,17 @@ import { CreateOrderPrint3dDto } from './dto/create-order-print3d.dto';
 import { EmailService } from '../mail/mail.service';
 import { Prisma, OrderPrint3d } from '@prisma/client';
 import { date } from 'joi';
-// import { YooCheckout } from '@a2seven/yoo-checkout';
+import { YooCheckout } from '@a2seven/yoo-checkout';
+import { Cron, CronExpression } from '@nestjs/schedule';
+import { format } from 'date-fns';
+import { toZonedTime, getTimezoneOffset } from 'date-fns-tz';
 
 dotenv.config();
 
 @Injectable()
 export class OrderPrint3dService {
   private bucket: string;
+  checkout: YooCheckout;
   // private checkout: YooCheckout;
   
   constructor(
@@ -21,10 +25,10 @@ export class OrderPrint3dService {
     private readonly emailService: EmailService,
   ) {
     this.bucket = process.env.S3_BUCKET_STL;
-    // this.checkout = new YooCheckout({
-    //   shopId: process.env.YOOKASSA_SHOP_ID,
-    //   secretKey: process.env.YOOKASSA_SECRET_KEY,
-    // });
+    this.checkout = new YooCheckout({
+      shopId: process.env.YOOKASSA_SHOP_ID,
+      secretKey: process.env.YOOKASSA_SECRET_KEY,
+    });
   }
 
   async uploadFile(file: Express.Multer.File, orderPrint3dData: CreateOrderPrint3dDto) {
@@ -41,20 +45,21 @@ export class OrderPrint3dService {
       const fileSize = file.size;
       await s3Client.send(new PutObjectCommand(params));
       const modelUrl = `https://storage.yandexcloud.net/${this.bucket}/${newFileName}`;
-      const dateTime = new Date();
-      const dateTimeLocaleString = dateTime.toLocaleString();
+      // const timeZone = 'Europe/Moscow';
+      // const currentTime = new Date();
+      // const moscowTime = new Date(currentTime.getTime() + 3 * 60 * 60 * 1000);
 
       const orderDetails = {
         fileName: orderPrint3dData.fileName,
         orderDetails: orderPrint3dData.orderDetails,
-        orderNumber: Number(orderPrint3dData.orderNumber), // Преобразование строки в число
+        orderNumber: orderPrint3dData.orderNumber, // Преобразование строки в число
         customerName: orderPrint3dData.customerName,
         customerEmail: orderPrint3dData.customerEmail,
         deliveryAddress: orderPrint3dData.deliveryAddress,
         deliveryCity: orderPrint3dData.deliveryCity,
         customerPhone: orderPrint3dData.customerPhone,
-        summa: Number(orderPrint3dData.summa),             // Преобразование строки в число
-        quantity: Number(orderPrint3dData.quantity),       // Преобразование строки в число
+        summa: Number(orderPrint3dData.summa),            
+        quantity: Number(orderPrint3dData.quantity),  
         comment: orderPrint3dData.comment,
         fileSize: fileSize,
         modelUrl: modelUrl,
@@ -62,14 +67,15 @@ export class OrderPrint3dService {
         width: Number(orderPrint3dData.width),
         length: Number(orderPrint3dData.length),
         height: Number(orderPrint3dData.height),
-        volume: Number(orderPrint3dData.volume),       // Преобразование строки в число
+        volume: Number(orderPrint3dData.volume),    
         color: orderPrint3dData.color,
         orderStatus: orderPrint3dData.orderStatus,
         disable: orderPrint3dData.disable,
         paymentId: orderPrint3dData.paymentId,
         cdekEntityUuid: orderPrint3dData.cdekEntityUuid,
-        creationTime: dateTime
+        creationTime: orderPrint3dData.creationTime
       };
+
       const orderPrint3d = await this.prisma.orderPrint3d.create({
         data: orderDetails,
       });
@@ -86,12 +92,61 @@ export class OrderPrint3dService {
         text: orderDetailsString,
       });
 
+      
+      await this.emailService.sendMailOrder({
+        to: orderPrint3dData.customerEmail,
+        subject: `Новый заказ`,
+        text: `Здравствуйте! Вы зарегистрировали заказ на 3D печать. Отследить статус заказа можно тут: http://robobug.ru/print3d/my-orders`,
+      });
+
+      // Start a timer to check the payment status
+      setTimeout(() => {
+        this.checkPaymentStatus(orderPrint3d.paymentId, orderPrint3d.id);
+      }, 10 * 60 * 1000); // 10 minutes
+
     } catch (error) {
       throw new Error(`Ошибка при загрузке файла: ${error.message}`);
     }
   }
 
-  async findOrderNumber(): Promise<number | null> {
+  async checkPaymentStatus(paymentId: string, orderId: number) {
+    try {
+      const payment = await this.checkout.getPayment(paymentId);
+      if (payment.status !== 'succeeded') {
+        await this.deleteOrder(orderId);
+      }
+    } catch (error) {
+      console.error('Error fetching payment information:', error);
+    }
+  }
+
+  @Cron(CronExpression.EVERY_10_SECONDS)
+  async checkAllPendingOrders() {
+    const pendingOrders = await this.prisma.orderPrint3d.findMany({
+      where: {
+        creationTime: {
+          lt: new Date(Date.now() - 10 * 60 * 1000), // older than 10 minutes,
+        },
+        orderStatus: 'pending',
+      },
+    });
+
+    for (const order of pendingOrders) {
+      await this.checkPaymentStatus(order.paymentId, order.id);
+    }
+  }
+
+  async deleteOrder(orderId: number) {
+    try {
+      await this.prisma.orderPrint3d.delete({
+        where: { id: orderId },
+      });
+    } catch (error) {
+      console.error('Error deleting order:', error);
+    }
+  }
+
+  async findOrderNumber(): Promise<string | null> {
     const lastOrder = await this.prisma.orderPrint3d.findFirst({
       orderBy: {
         orderNumber: 'desc',
@@ -158,6 +213,13 @@ export class OrderPrint3dService {
     });
 
     return orders;
+  }
+  
+  async updateOrderStatus(orderNumber: number, newStatus: string): Promise<OrderPrint3d> {
+    return this.prisma.orderPrint3d.update({
+      where: { id: Number(orderNumber) },
+      data: { orderStatus: newStatus },
+    });
   }
 
 }

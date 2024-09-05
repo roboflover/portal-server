@@ -1,0 +1,4 @@
+-- AlterTable
+ALTER TABLE "OrderPrint3d" ALTER COLUMN "creationTime" DROP NOT NULL,
+ALTER COLUMN "creationTime" DROP DEFAULT,
+ALTER COLUMN "creationTime" SET DATA TYPE TEXT;

@@ -27,7 +27,7 @@ model OrderCatalog {
 
 model OrderPrint3d {
   id               Int @id @default(autoincrement())
-  orderNumber      Int?            
+  orderNumber      String?            
   quantity         Int
   summa            Float
   fileSize         Float

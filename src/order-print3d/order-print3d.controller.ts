@@ -16,7 +16,7 @@ export class OrderPrint3dController {
     @UploadedFile() file: Express.Multer.File,  
     @Body() data: CreateOrderPrint3dDto,
   ): Promise<void> {
-    console.log(data)
+    // console.log(data)
     try {
       if (!file) {
         throw new HttpException('Файл не найден', HttpStatus.BAD_REQUEST);
@@ -60,4 +60,13 @@ export class OrderPrint3dController {
   remove(@Param('id') id: string) {
     this.orderPrint3dService.deleteFileById(id);
   }
+
+  @Patch(':orderNumber/status')
+  async updateOrderStatus(
+    @Param('orderNumber') orderNumber: number,
+    @Body('newStatus') newStatus: string
+  ) {
+    return this.orderPrint3dService.updateOrderStatus(orderNumber, newStatus);
+  }
+
 }

@@ -18,7 +18,7 @@ export class CreateOrderPrint3dDto implements Prisma.OrderPrint3dCreateInput, Pr
 
   @IsNumber()
   @IsOptional()
-  orderNumber?: number;
+  orderNumber?: string;
 
   @IsInt()
   quantity: number;
