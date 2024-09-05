@@ -152,8 +152,8 @@ export class OrderPrint3dService {
     return lastOrder?.orderNumber || '';
   }
 
-  async deleteFileById(id: string): Promise<void> {
-    const idAsNumber = parseInt(id, 10);
+  async deleteFileById(id: number): Promise<void> {
+    const idAsNumber = id;
     const orderPrint3d = await this.prisma.orderPrint3d.findUnique({
       where: { id: idAsNumber }
     });

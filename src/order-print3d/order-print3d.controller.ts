@@ -52,18 +52,18 @@ export class OrderPrint3dController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateOrderPrint3dDto: CreateOrderPrint3dDto) {
+  update(@Param('id') id: number, @Body() updateOrderPrint3dDto: CreateOrderPrint3dDto) {
     return this.orderPrint3dService.update(+id, updateOrderPrint3dDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  remove(@Param('id') id: number) {
     this.orderPrint3dService.deleteFileById(id);
   }
 
   @Patch(':id/status')
   async updateOrderStatus(
-    @Param('id') id: string,  // Тип должен быть строкой, чтобы соответствовать параметру URL
+    @Param('id') id: number,  // Тип должен быть строкой, чтобы соответствовать параметру URL
     @Body('newStatus') newStatus: string
   ) {
     const numericId = Number(id);
