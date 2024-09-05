@@ -155,7 +155,7 @@ export class OrderPrint3dService {
         orderNumber: true,
       },
     });
-    return lastOrder?.orderNumber || null;
+    return lastOrder?.orderNumber;
   }
 
   async deleteFileById(id: string): Promise<void> {
