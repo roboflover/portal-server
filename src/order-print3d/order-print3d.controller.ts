@@ -1,4 +1,4 @@
-import { Controller, Post, Body, UploadedFile, UseInterceptors, HttpException, HttpStatus, Get, Param, Patch, Delete, Query } from '@nestjs/common';
+import { Controller, Post, Body, UploadedFile, UseInterceptors, HttpException, HttpStatus, Get, Param, Patch, Delete, Query, NotFoundException } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { OrderPrint3dService } from './order-print3d.service';
 import { CreateOrderPrint3dDto } from './dto/create-order-print3d.dto';
@@ -61,12 +61,17 @@ export class OrderPrint3dController {
     this.orderPrint3dService.deleteFileById(id);
   }
 
-  @Patch(':orderNumber/status')
+  @Patch(':id/status')
   async updateOrderStatus(
-    @Param('orderNumber') orderNumber: string,
+    @Param('id') id: string,  // Тип должен быть строкой, чтобы соответствовать параметру URL
     @Body('newStatus') newStatus: string
   ) {
-    return this.orderPrint3dService.updateOrderStatus(orderNumber, newStatus);
+    const numericId = Number(id);
+    if (isNaN(numericId)) {
+      throw new NotFoundException(`Invalid order ID: ${id}`);
+    }
+
+    return this.orderPrint3dService.updateOrderStatus(numericId, newStatus);
   }
 
 }

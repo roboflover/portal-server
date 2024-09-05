@@ -52,7 +52,7 @@ export class OrderPrint3dService {
       const orderDetails = {
         fileName: orderPrint3dData.fileName,
         orderDetails: orderPrint3dData.orderDetails,
-        orderNumber: orderPrint3dData.orderNumber, // Преобразование строки в число
+        orderNumber: orderPrint3dData.orderNumber,  
         customerName: orderPrint3dData.customerName,
         customerEmail: orderPrint3dData.customerEmail,
         deliveryAddress: orderPrint3dData.deliveryAddress,
@@ -215,11 +215,21 @@ export class OrderPrint3dService {
     return orders;
   }
   
-  async updateOrderStatus(orderNumber: string, newStatus: string): Promise<OrderPrint3d> {
+  async updateOrderStatus(id: number, newStatus: string): Promise<OrderPrint3d> {
+    // Найдем запись по id
+    const order = await this.prisma.orderPrint3d.findUnique({
+      where: { id },
+    });
+
+    if (!order) {
+      throw new NotFoundException(`Order with ID ${id} not found`);
+    }
+
+    // Обновим запись по id
     return this.prisma.orderPrint3d.update({
-      where: { id: Number(orderNumber) },
+      where: { id: order.id },
       data: { orderStatus: newStatus },
     });
   }
-
 }
+
