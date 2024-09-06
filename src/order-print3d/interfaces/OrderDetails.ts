@@ -14,6 +14,8 @@
     orderDetails?: string;
     deliveryCity?: string;
     deliveryAddress?: string;
+    deliveryCoast?: string;
+    selfPickup?: boolean;
     customerName: string;
     customerEmail: string;
     customerPhone: string;

@@ -62,6 +62,14 @@ export class CreateOrderPrint3dDto implements Prisma.OrderPrint3dCreateInput, Pr
   @IsOptional()
   deliveryCity?: string;
 
+  @IsNumber()
+  @IsOptional()
+  deliveryCoast?: number;
+  
+  @IsBoolean()
+  @IsOptional()
+  selfPickup?: boolean;
+
   @IsString()
   customerName: string;
 

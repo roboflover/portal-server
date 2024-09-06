@@ -40,10 +40,17 @@ export class OrderPrint3dService {
       ContentType: file.mimetype
     };
 
+    function stringToBoolean(str) {
+      return str.toLowerCase() === 'true';
+    }
+    
+
     try {
       const fileSize = file.size;
       await s3Client.send(new PutObjectCommand(params));
       const modelUrl = `https://storage.yandexcloud.net/${this.bucket}/${newFileName}`;
+
+      const selfPickup = stringToBoolean(orderPrint3dData.selfPickup);
 
       const orderDetails = {
         fileName: orderPrint3dData.fileName,
@@ -53,6 +60,8 @@ export class OrderPrint3dService {
         customerEmail: orderPrint3dData.customerEmail,
         deliveryAddress: orderPrint3dData.deliveryAddress,
         deliveryCity: orderPrint3dData.deliveryCity,
+        // deliveryCoast: orderPrint3dData.deliveryCoast,
+        selfPickup: selfPickup,
         customerPhone: orderPrint3dData.customerPhone,
         summa: Number(orderPrint3dData.summa),
         quantity: Number(orderPrint3dData.quantity),
@@ -69,7 +78,7 @@ export class OrderPrint3dService {
         disable: orderPrint3dData.disable,
         paymentId: orderPrint3dData.paymentId,
         cdekEntityUuid: orderPrint3dData.cdekEntityUuid,
-        creationTime: new Date()  // Убедитесь, что время правильное
+        creationTime: new Date(),
       };
 
       const orderPrint3d = await this.prisma.orderPrint3d.create({

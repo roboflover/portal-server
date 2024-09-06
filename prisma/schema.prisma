@@ -42,6 +42,8 @@ model OrderPrint3d {
   shoppingCartItems ItemPrint3d[]
   deliveryAddress  String?
   deliveryCity     String?
+  deliveryCoast    Float?
+  selfPickup       Boolean? @default(false)
   customerName     String
   customerEmail    String
   customerPhone    String
