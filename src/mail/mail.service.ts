@@ -33,7 +33,7 @@ export class EmailService {
   async sendVerificationEmail(email: string, token: string) {
     const app = await NestFactory.create(AppModule);
     const configService = app.get(ConfigService);
-    const backendUrl = configService.get('BACKEND_URL');
+    const backendUrl = configService.get('FRONTEND_URL');
     const url = `${backendUrl}/email/verify?token=${token}`;
     await this.mailerService.sendMail({
       to: email,

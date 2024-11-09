@@ -1,8 +1,0 @@
--- AlterTable
-ALTER TABLE "OrderPrint3d" ADD COLUMN     "disable" BOOLEAN DEFAULT false,
-ADD COLUMN     "height" DOUBLE PRECISION,
-ADD COLUMN     "length" DOUBLE PRECISION,
-ADD COLUMN     "material" TEXT,
-ADD COLUMN     "paymentId" TEXT,
-ADD COLUMN     "volume" DOUBLE PRECISION,
-ADD COLUMN     "width" DOUBLE PRECISION;

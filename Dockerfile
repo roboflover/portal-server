@@ -1,35 +1,32 @@
-# Stage 1: Build the NestJS application
-FROM node:21.0 AS builder
 
-WORKDIR /app
+# Используем официальный образ Node.js в качестве базового 
+FROM node:20-alpine 
 
-COPY package.json package-lock.json ./
-RUN npm install
+# # Устанавливаем необходимые пакеты: Python и библиотеки для построения "canvas"
+# RUN apk add --no-cache python3 make g++ 
 
-COPY . .
+# Устанавливаем рабочую директорию 
+WORKDIR /usr/src/app 
 
-RUN npm run build
-RUN npx prisma generate
+# Копируем package.json и package-lock.json 
+COPY package*.json ./ 
 
-# Stage 2: Run the NestJS application
-FROM node:21.0-bullseye-slim
+# Устанавливаем зависимости 
+RUN npm install 
 
-WORKDIR /app
+# Копируем остальные файлы приложения в контейнер 
+COPY . . 
 
-# Установите зависимости для сборки sharp
-RUN apt-get update && apt-get install -y \
-    libc6-dev \
-    libjpeg62-turbo-dev \
-    libpng-dev \
-    libtool \
-    build-essential \
-    nasm \
-    && rm -rf /var/lib/apt/lists/*
+# Компилируем приложение 
+# RUN npm install prisma --save-dev
 
-COPY --from=builder /app/dist ./dist
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/package.json ./package.json
+RUN npm run build 
 
-EXPOSE 3000
+# Открываем порт, который будет использовать ваше приложение 
+EXPOSE 8085 
 
+# Устанавливаем переменную окружения для NODE_ENV 
+ENV NODE_ENV=production 
+
+# Запускаем приложение 
 CMD ["node", "dist/main"]
