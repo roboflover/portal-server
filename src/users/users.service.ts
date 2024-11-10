@@ -35,7 +35,7 @@ export class UsersService {
       data: { password: hashPass },
     });
   }
-
+  
   async saveVerificationToken(userId: number, token: string): Promise<void> {
     const user = await this.prisma.user.findUnique({ where: { id: userId } });
     if (!user) {
