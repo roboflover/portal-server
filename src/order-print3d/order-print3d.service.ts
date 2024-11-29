@@ -13,6 +13,7 @@ import { format } from 'date-fns';
 import { toZonedTime, getTimezoneOffset } from 'date-fns-tz';
 import { Telegraf } from 'telegraf';
 import { ConfigService } from '@nestjs/config';
+import { message } from 'telegraf/filters'
 
 dotenv.config();
 
@@ -34,10 +35,14 @@ export class OrderPrint3dService {
       secretKey: process.env.YOOKASSA_SECRET_KEY
     });
     const botToken = this.configService.get<string>('TELEGRAM_BOT_TOKEN');
-    this.bot = new Telegraf(botToken); 
+    this.bot = new Telegraf(botToken);
     this.bot.start((ctx) => this.sendWelcomeMessage(ctx));
     this.bot.launch();
+
+
   }
+
+
 
   private sendWelcomeMessage(ctx) {
     ctx.replyWithPhoto(
@@ -141,7 +146,15 @@ TapSwap is a cutting-edge financial platform where users can earn tokens by leve
       `;
   
       try {
-        await this.bot.telegram.sendMessage(process.env.TELEGRAM_CHAT_ID, telegramMessage);
+        await this.bot.on(message('text'), async (ctx) => {
+          // Explicit usage
+          await ctx.telegram.sendMessage(ctx.message.chat.id, `Hello ${ctx.state.role}, ${telegramMessage}`)
+        
+          // Using context shortcut
+          await ctx.reply(`Hello ${ctx.state.role}`)
+        })
+        
+        // this.bot.telegram.sendMessage(process.env.TELEGRAM_CHAT_ID, telegramMessage);
       } catch (telegramError) {
         console.error('Ошибка отправки сообщения в Telegram:', telegramError);
       }
