@@ -14,6 +14,7 @@ import { toZonedTime, getTimezoneOffset } from 'date-fns-tz';
 import { Telegraf } from 'telegraf';
 import { ConfigService } from '@nestjs/config';
 import { message } from 'telegraf/filters'
+import { BotService } from '../bot/bot.service';
 
 dotenv.config();
 
@@ -26,7 +27,8 @@ export class OrderPrint3dService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly emailService: EmailService,
-    private configService: ConfigService
+    private configService: ConfigService,
+    private readonly botService: BotService
 
   ) {
     this.bucket = process.env.S3_BUCKET_STL;
@@ -34,28 +36,6 @@ export class OrderPrint3dService {
       shopId: process.env.YOOKASSA_SHOP_ID,
       secretKey: process.env.YOOKASSA_SECRET_KEY
     });
-    const botToken = this.configService.get<string>('TELEGRAM_BOT_TOKEN');
-    this.bot = new Telegraf(botToken);
-    this.bot.start((ctx) => this.sendWelcomeMessage(ctx));
-    this.bot.launch();
-
-
-  }
-
-
-
-  private sendWelcomeMessage(ctx) {
-    ctx.replyWithPhoto(
-      { url: 'https://ioflood.com/blog/wp-content/uploads/2023/10/java_logo_dice_random-300x300.jpg' }, // Замените на URL вашей картинки
-      {
-        caption: 
-`Welcome to TapSwap!
-Tap on the coin and see your balance rise.
-
-TapSwap is a cutting-edge financial platform where users can earn tokens by leveraging the mining app's various features. The majority of TapSwap Token (TAPS) distribution will occur among the players here.
-`,
-      },
-    );
   }
 
   async uploadFile(file: Express.Multer.File, orderPrint3dData: CreateOrderPrint3dDto) {
@@ -127,7 +107,7 @@ TapSwap is a cutting-edge financial platform where users can earn tokens by leve
         subject: `Новый заказ`,
         text: `Здравствуйте! Вы зарегистрировали заказ на 3D печать. Отследить статус заказа можно тут: http://robobug.ru/print3d/my-orders`
       });
-  
+      
       // Отправка сообщения в Telegram
       const telegramMessage = `
       Новый заказ:
@@ -144,22 +124,9 @@ TapSwap is a cutting-edge financial platform where users can earn tokens by leve
       Адрес доставки: ${orderDetails.deliveryAddress || 'Самовывоз'}
       Город доставки: ${orderDetails.deliveryCity || ''}
       `;
-  
-      try {
-        await this.bot.on(message('text'), async (ctx) => {
-          // Explicit usage
-          await ctx.telegram.sendMessage(ctx.message.chat.id, `Hello ${ctx.state.role}, ${telegramMessage}`)
-        
-          // Using context shortcut
-          await ctx.reply(`Hello ${ctx.state.role}`)
-        })
-        
-        // this.bot.telegram.sendMessage(process.env.TELEGRAM_CHAT_ID, telegramMessage);
-      } catch (telegramError) {
-        console.error('Ошибка отправки сообщения в Telegram:', telegramError);
-      }
+      this.botService.sendPeriodicMessage(telegramMessage);
 
-
+      
       setTimeout(() => {
         this.checkPaymentStatus(orderPrint3d.paymentId, orderPrint3d.id);
       }, 10 * 60 * 1000); // 10 minutes
@@ -169,107 +136,6 @@ TapSwap is a cutting-edge financial platform where users can earn tokens by leve
     }
   }
     
-
-//   async uploadFile(file: Express.Multer.File, orderPrint3dData: CreateOrderPrint3dDto) {
-//     const newFileName = `model-${Date.now()}.stl`;
-
-//     const params = {
-//       Bucket: this.bucket,
-//       Key: newFileName,
-//       Body: file.buffer,
-//       ContentType: file.mimetype
-//     };
-
-//     function stringToBoolean(str) {
-//       return str.toLowerCase() === 'true';
-//     }
-    
-
-//     try {
-//       const fileSize = file.size;
-//       await s3Client.send(new PutObjectCommand(params));
-//       const modelUrl = `https://storage.yandexcloud.net/${this.bucket}/${newFileName}`;
-
-//       const selfPickup = stringToBoolean(orderPrint3dData.selfPickup);
-
-//       const orderDetails = {
-//         fileName: orderPrint3dData.fileName,
-//         orderDetails: orderPrint3dData.orderDetails,
-//         orderNumber: orderPrint3dData.orderNumber,   // Преобразование к строке если необходимо
-//         customerName: orderPrint3dData.customerName,
-//         customerEmail: orderPrint3dData.customerEmail,
-//         deliveryAddress: orderPrint3dData.deliveryAddress,
-//         deliveryCity: orderPrint3dData.deliveryCity,
-//         // deliveryCoast: orderPrint3dData.deliveryCoast,
-//         selfPickup: selfPickup,
-//         customerPhone: orderPrint3dData.customerPhone,
-//         summa: Number(orderPrint3dData.summa),
-//         quantity: Number(orderPrint3dData.quantity),
-//         comment: orderPrint3dData.comment,
-//         fileSize: fileSize,
-//         modelUrl: modelUrl,
-//         material: orderPrint3dData.material,
-//         width: Number(orderPrint3dData.width),
-//         length: Number(orderPrint3dData.length),
-//         height: Number(orderPrint3dData.height),
-//         volume: Number(orderPrint3dData.volume),
-//         color: orderPrint3dData.color,
-//         orderStatus: orderPrint3dData.orderStatus,
-//         disable: orderPrint3dData.disable,
-//         paymentId: orderPrint3dData.paymentId,
-//         cdekEntityUuid: orderPrint3dData.cdekEntityUuid,
-//         creationTime: new Date(),
-//       };
-
-//       const orderPrint3d = await this.prisma.orderPrint3d.create({
-//         data: orderDetails
-//       });
-
-//       if (!orderPrint3d) {
-//         throw new NotFoundException(`OrderPrint3d with title ${orderPrint3dData.orderNumber} not found`);
-//       }
-
-//       const orderDetailsString = JSON.stringify(orderDetails);
-
-//       await this.emailService.sendMailOrder({
-//         to: 'portal@robobug.ru',
-//         subject: `Новый заказ`,
-//         text: orderDetailsString
-//       });
-
-//       await this.emailService.sendMailOrder({
-//         to: orderPrint3dData.customerEmail,
-//         subject: `Новый заказ`,
-//         text: `Здравствуйте! Вы зарегистрировали заказ на 3D печать. Отследить статус заказа можно тут: http://robobug.ru/print3d/my-orders`
-//       });
-//      // Отправка сообщения в Telegram
-//      const telegramMessage = `
-//      Новый заказ:
-//      Номер заказа: ${orderDetails.orderNumber}
-//      Имя клиента: ${orderDetails.customerName}
-//      Телефон клиента: ${orderDetails.customerPhone}
-//      Сумма заказа: ${orderDetails.summa} руб.
-//      Материал: ${orderDetails.material}
-//      Цвет: ${orderDetails.color}
-//      Размеры (ШхДхВ): ${orderDetails.width}x${orderDetails.length}x${orderDetails.height} мм
-//      Объем модели: ${orderDetails.volume} см³
-//      Ссылка на модель: ${orderDetails.modelUrl}
-//      Комментарий к заказу: ${orderDetails.comment || 'Нет'}
-//      Адрес доставки: ${orderDetails.deliveryAddress || 'Самовывоз'}
-//      Город доставки: ${orderDetails.deliveryCity || ''}
-// `;
-
-//       await telegramBot.sendMessage(process.env.TELEGRAM_CHAT_ID, telegramMessage);
-
-//       setTimeout(() => {
-//         this.checkPaymentStatus(orderPrint3d.paymentId, orderPrint3d.id);
-//       }, 10 * 60 * 1000); // 10 minutes
-
-//     } catch (error) {
-//       throw new Error(`Ошибка при загрузке файла: ${error.message}`);
-//     }
-//   }
-
   async checkPaymentStatus(paymentId: string, orderId: number) {
     try {
       const payment = await this.checkout.getPayment(paymentId);
