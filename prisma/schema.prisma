@@ -113,15 +113,30 @@ model Event {
   name        String
   description String?
   date        DateTime
-  tickets     Ticket[]
 }
 
 model Ticket {
   id        Int     @id @default(autoincrement())
-  eventId   Int
-  userId    Int
+  title     String
+  description String?
+  price     String?
+  oldPrice  Float?
   promocode String?
-  event     Event   @relation(fields: [eventId], references: [id])
+  imageUrl  String?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt 
+  isDelete  Boolean?
+}
+
+model OrderTicket {
+  id        Int     @id @default(autoincrement())
+  title     String
+  description String?
+  price     String?
+  count     Int?
+  paymentId String?
+  isDelete  Boolean?
+  email     String?
 }
 
 model Cat {
@@ -205,7 +220,6 @@ model Image {
   news         News?       @relation("NewsImages", fields: [newsId], references: [id])
   catalog      Catalog?    @relation("CatalogImages", fields: [catalogId], references: [id])
   product      Product?    @relation("ProductImages", fields: [productId], references: [id])
-
 }
 
 model Review3dPrint {

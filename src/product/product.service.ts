@@ -2,7 +2,7 @@ import { Injectable, InternalServerErrorException, NotFoundException } from '@ne
 import { DeleteObjectCommand, PutObjectCommand } from '@aws-sdk/client-s3';
 import { s3Client } from '../s3client';
 import * as dotenv from 'dotenv';
-import * as sharp from 'sharp';
+import sharp from 'sharp';
 import { PrismaService } from '../prisma/prisma.service';
 import { Product, Prisma } from '@prisma/client';
 import * as fs from 'fs';

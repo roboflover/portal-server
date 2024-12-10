@@ -39,6 +39,7 @@ export class OrderPrint3dService {
   }
 
   async uploadFile(file: Express.Multer.File, orderPrint3dData: CreateOrderPrint3dDto) {
+    console.log(orderPrint3dData)
     const newFileName = `model-${Date.now()}.stl`;
     const params = {
       Bucket: this.bucket,

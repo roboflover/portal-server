@@ -13,6 +13,8 @@ import { OrderPrint3dModule } from './order-print3d/order-print3d.module';
 import { OrderCatalogModule } from './order-catalog/order-catalog.module';
 // import { ReviewPrint3dModule } from './review-print3d/review-print3d.module';
 import { BotModule } from './bot/bot.module';
+import { TicketsModule } from './tickets/tickets.module';
+import { OrderTicketModule } from './order-ticket/order-ticket.module';
 import * as Joi from 'joi';
 
 @Module({
@@ -35,7 +37,8 @@ import * as Joi from 'joi';
     OrderPrint3dModule,
     OrderCatalogModule,
     BotModule,
-    // ReviewPrint3dModule,
+    TicketsModule,
+    OrderTicketModule,
   ],
 })
 export class AppModule {}
