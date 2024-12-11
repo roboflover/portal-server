@@ -70,14 +70,14 @@ export class TicketsService {
     
       }
 
-      async findAll(): Promise<Ticket[]> {
-        return this.prisma.ticket.findMany({
-          orderBy: {
-            id: 'desc', // сортировка по полю id в порядке убывания
-          },
-          // include: { images: true }, // Включаем связанные изображения
-        });
-      }
+    async findAll(): Promise<Ticket[]> {
+      return this.prisma.ticket.findMany({
+        orderBy: {
+          id: 'desc', // сортировка по полю id в порядке убывания
+        },
+        // include: { images: true }, // Включаем связанные изображения
+      });
+    }
 
       // async update(id: number, сreateTicketDto: CreateTicketDto): Promise<Ticket> {
       //   return this.prisma.news.update({

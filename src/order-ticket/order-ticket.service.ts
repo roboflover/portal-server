@@ -17,6 +17,7 @@ export class OrderTicketService {
           title: data.title,
           price: data.price, // Преобразуем строку в число, если нужно
           description: data.description,
+          email: data.email
         },
       });
     } catch (error) {
@@ -24,5 +25,13 @@ export class OrderTicketService {
     }
 
     return 'This action adds a new orderTicket';
+  }
+
+  async getOrdersByEmail(email: string) {
+    const orders = await this.prisma.orderTicket.findMany({
+      where: { email: email }
+    });
+
+    return orders;
   }
 }

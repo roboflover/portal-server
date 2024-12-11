@@ -23,4 +23,13 @@ export class OrderTicketController {
       throw new HttpException('Внутренняя ошибка сервера', HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
+
+  
+  @Get('getTickets')
+  async getOrders(@Query('email') email: string) {
+    if (!email) {
+      throw new Error('Email is required');
+    }
+    return this.orderTicketService.getOrdersByEmail(email);
+  }
 }
