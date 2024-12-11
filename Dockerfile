@@ -1,6 +1,6 @@
 
 # Используем официальный образ Node.js в качестве базового 
-FROM node:20-alpine 
+FROM node:21-alpine 
 
 # # Устанавливаем необходимые пакеты: Python и библиотеки для построения "canvas"
 # RUN apk add --no-cache python3 make g++ 
