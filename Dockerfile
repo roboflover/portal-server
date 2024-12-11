@@ -30,7 +30,3 @@ ENV NODE_ENV=production
 
 # Запускаем приложение 
 CMD ["node", "dist/main"]
-
-# Specifically this:
-RUN apt-get update -qq && \
-    apt-get install -y openssl
