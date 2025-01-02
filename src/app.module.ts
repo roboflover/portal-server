@@ -15,6 +15,7 @@ import { OrderCatalogModule } from './order-catalog/order-catalog.module';
 import { BotModule } from './bot/bot.module';
 import { TicketsModule } from './tickets/tickets.module';
 import { OrderTicketModule } from './order-ticket/order-ticket.module';
+import { Model3dModule } from './model3d/model3d.module';
 import * as Joi from 'joi';
 
 @Module({
@@ -39,6 +40,7 @@ import * as Joi from 'joi';
     BotModule,
     TicketsModule,
     OrderTicketModule,
+    Model3dModule,
   ],
 })
 export class AppModule {}

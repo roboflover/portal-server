@@ -58,14 +58,7 @@ model OrderPrint3d {
   models3d         Model3d[]
   cdekEntityUuid   String?
   creationTime     DateTime @default(now())
-}
-
-model Model3d {
-  id           Int           @id @default(autoincrement())
-  modelName    String
-  modelUrl     String
-  orderPrint3d OrderPrint3d? @relation(fields: [orderPrint3dId], references: [id])
-  orderPrint3dId Int?
+  imageLinks       ImageLink[] // Новое отношение: один заказ может иметь несколько изображений
 }
 
 model ItemPrint3d {
@@ -79,17 +72,40 @@ model ItemPrint3d {
   order         OrderPrint3d   @relation(fields: [orderId], references: [id])
 }
 
+model Model3d {
+  id           Int       @id @default(autoincrement())
+  modelName    String    // Название 3D модели
+  modelUrl     String    // Ссылка на файл 3D модели
+  userId       Int       // Внешний ключ для связи с пользователем
+  user         User      @relation(fields: [userId], references: [id]) // Связь с User
+  imageLinkId  Int?      // Внешний ключ для связи с изображением (опционально)
+  imageLink     ImageLink?    @relation(fields: [imageLinkId], references: [id]) 
+  orderPrint3d OrderPrint3d? @relation(fields: [orderPrint3dId], references: [id]) // Связь с заказом (опционально)
+  orderPrint3dId Int?
+}
+
+model ImageLink {
+  id            Int           @id @default(autoincrement())
+  url           String        // Ссылка на изображение
+  description   String?       // Описание изображения (опционально)
+  model3ds      Model3d[]     // Связь с Model3d (массив моделей, связанных с этим изображением)
+  orderPrint3d  OrderPrint3d? @relation(fields: [orderPrint3dId], references: [id]) // Связь с заказом
+  orderPrint3dId Int?         // Внешний ключ для связи с OrderPrint3d
+}
+
 model User {
-  id                Int      @default(autoincrement()) @id
-  email             String   @unique
+  id                Int       @default(autoincrement()) @id
+  email             String    @unique
   name              String?
   password          String
-  avatar            String?  // Поле для хранения URL аватара пользователя
-  verificationToken String?  // Поле для хранения токена подтверждения
-  isEmailVerified   Boolean  @default(false) // Поле для отслеживания подтверждения email
+  avatar            String?   // Поле для хранения URL аватара пользователя
+  verificationToken String?   // Поле для хранения токена подтверждения
+  isEmailVerified   Boolean   @default(false) // Поле для отслеживания подтверждения email
   posts             Post[]
-  role              String   @default("user")
+  role              String    @default("user")
+  models            Model3d[] // Связь с Model3d (один пользователь может иметь несколько моделей)
   emailVerificationTokens EmailVerificationToken[] // Связь с токенами верификации
+
 }
 
 model EmailVerificationToken {
